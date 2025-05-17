@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,5 +30,16 @@ class ApiController extends AbstractController
         
 
         return $this->json("FINE STORE PRODUCT");
+    }
+
+    #[Route('/v1/index-product', methods: ['GET'])]
+    public function indexProduct(ProductRepository $pr): Response
+    {
+        $product = $pr
+            ->findOneBy([
+                "name" => "Keyboard"    
+            ]);        
+
+        return $this->json("PRICE: " . $product->getPrice());
     }
 }
