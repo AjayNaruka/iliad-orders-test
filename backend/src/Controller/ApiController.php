@@ -24,23 +24,40 @@ class ApiController extends AbstractController
 
             $entityManager->persist($newProduct);
             $entityManager->flush();
-
         } catch (\Exception $e) {
             $data["error"] = $e->getMessage();
             return $this->json($data);
         }
-        
+
 
         return $this->json("FINE STORE PRODUCT");
     }
+
+    #[Route('/api/v1/list-products', methods: ['GET'])]
+    public function listProducts(ProductRepository $pr): Response
+    {
+        $products = $pr->findAll();
+        $mappedProducts = array_map(function($product){
+            return [
+                "id" => $product->getId(),
+                "name" => $product->getName(),
+                "description" => $product->getDescription(),
+                "price" => $product->getPrice(),
+                "image" => $product->getImage(),
+            ];
+        }, $products);
+
+        return $this->json($mappedProducts);
+    }
+
 
     #[Route('/api/v1/index-product', methods: ['GET'])]
     public function indexProduct(ProductRepository $pr): Response
     {
         $product = $pr
             ->findOneBy([
-                "name" => "Keyboard"    
-            ]);        
+                "name" => "Keyboard"
+            ]);
 
         return $this->json("PRICE: " . $product->getPrice());
     }
@@ -50,7 +67,7 @@ class ApiController extends AbstractController
     {
         $user = new User();
         $user->setEmail("fapuasn@gmail.com");
-        $user->setRoles(['ROLE_USER']); 
+        $user->setRoles(['ROLE_USER']);
         $user->setPassword($hasher->hashPassword($user, 'password123'));
 
         $em->persist($user);
@@ -58,6 +75,4 @@ class ApiController extends AbstractController
 
         return new Response('User created');
     }
-
-
 }
