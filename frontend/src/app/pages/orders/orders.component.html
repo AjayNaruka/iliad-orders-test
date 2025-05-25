@@ -1,0 +1,15 @@
+<div class="container" *ngIf="orders">
+    <div class="orders-container">
+        <div class=" w-100 single-order d-flex align-items-center justify-content-between px-3 mb-3" *ngFor="let order of orders">
+            <div class="order-details">
+                <strong>{{order.order_id}}</strong>
+                <h3>{{order.product_name}}</h3>
+                <strong>{{order.product_price}}€</strong>
+            </div>
+            <div class="order-action">
+                <button type="button" class="btn btn-danger">Delete</button>
+            </div>
+            
+        </div>
+    </div>
+</div>

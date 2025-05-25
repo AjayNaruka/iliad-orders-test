@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use Carbon\Carbon;
@@ -65,7 +66,7 @@ class ApiController extends AbstractController
                 "id" => $id
             ]);
         if ($product) {
-            return new JsonResponse( [
+            return new JsonResponse([
                 "id" => $product->getId(),
                 "name" => $product->getName(),
                 "description" => $product->getDescription(),
@@ -78,10 +79,6 @@ class ApiController extends AbstractController
                 JsonResponse::HTTP_NOT_FOUND
             );
         }
-
-
-
-        
     }
 
     #[Route('/api/v1/create-user', methods: ['POST'])]
@@ -107,11 +104,10 @@ class ApiController extends AbstractController
 
         $product = $pr->findOneBy(["id" => $data["product_id"]]);
 
-        if($user && $product){
+        if ($user && $product) {
             $order = new Order();;
-            $order->setUserId($user->getId());
-            $order->setUserId($user->getId());
-            $order->setProductId($product->getId());
+            $order->setUser($user);
+            $order->setProduct($product);
             $order->setCreationDate(Carbon::now()->toDateTime());
 
             $em->persist($order);
@@ -128,5 +124,33 @@ class ApiController extends AbstractController
         }
     }
 
+    #[Route('/api/v1/user/list-orders', methods: ['GET'])]
+    public function listOrders(ProductRepository $pr, UserRepository $ur, OrderRepository $or): Response
+    {
+        //dd("LIST ORDERS");
 
+        $userMail = $this->getUser()->getUserIdentifier();
+        $user = $ur->findOneBy(["email" => $userMail]);
+
+
+
+        if ($user) {
+            $orders = $user->getOrders();
+            $mappedOrders = array_map(function ($order) {
+                $product = $order->getProduct();
+                return [
+                    "order_id" => $order->getId(),
+                    "product_name" => $product->getName(),
+                    "product_price" => $product->getPrice(),
+                    "creation_date" => $order->getCreationDate(),
+                ];
+            }, $orders->toArray());
+            return new JsonResponse($mappedOrders);
+        } else {
+            return new JsonResponse(
+                ['error' => 'Invalid user'],
+                JsonResponse::HTTP_NOT_FOUND
+            );
+        }
+    }
 }

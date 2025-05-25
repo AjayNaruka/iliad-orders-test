@@ -29,17 +29,28 @@ export class ApiServiceService {
     );
   }
 
-  postAuth(endpoint: string, body: any = {}) {
+  getAuth<T>(endpoint: string, body: any = {}): Observable<T> {
     const token = localStorage.getItem('token');
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
 
-    console.log(headers);
-    
+    return this.http.get<T>(endpoint, {headers}).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error);
+      })
+    );
+  }
 
-    return this.http.post(endpoint, body, {headers}).pipe(
+  postAuth<T>(endpoint: string, body: any = {}) {
+    const token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post(endpoint, body, { headers }).pipe(
       catchError((error) => {
         return error;
       })

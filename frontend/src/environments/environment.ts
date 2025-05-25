@@ -10,7 +10,8 @@ export const environment = {
                 detailProduct: "http://localhost:8080/api/v1/index-product"
             },
             orders:{
-                storeProducts: "http://localhost:8080/api/v1/user/create-order"
+                storeOrder: "http://localhost:8080/api/v1/user/create-order",
+                listOrders: "http://localhost:8080/api/v1/user/list-orders"
             }
         }
     }

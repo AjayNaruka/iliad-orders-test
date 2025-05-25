@@ -12,6 +12,11 @@ export class OrderService {
   ) { }
 
   storeOrder(id: Number){
-    return this.apiService.postAuth(environment.api.endpoints.orders.storeProducts, { product_id: id});
+    return this.apiService.postAuth(environment.api.endpoints.orders.storeOrder, { product_id: id});
+  }
+
+  listOrders()
+  {
+    return this.apiService.getAuth(environment.api.endpoints.orders.listOrders)
   }
 }
