@@ -1,0 +1,16 @@
+.product-detail-page{
+    .image-container{
+        height: 500px;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        img{
+            height: 100%;
+            width: auto;
+        }
+    }
+    .text-container{
+        strong.price{
+            font-size: 24px;
+        }
+    }
+}

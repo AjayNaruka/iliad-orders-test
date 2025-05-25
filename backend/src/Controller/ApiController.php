@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -37,7 +38,7 @@ class ApiController extends AbstractController
     public function listProducts(ProductRepository $pr): Response
     {
         $products = $pr->findAll();
-        $mappedProducts = array_map(function($product){
+        $mappedProducts = array_map(function ($product) {
             return [
                 "id" => $product->getId(),
                 "name" => $product->getName(),
@@ -51,15 +52,31 @@ class ApiController extends AbstractController
     }
 
 
-    #[Route('/api/v1/index-product', methods: ['GET'])]
-    public function indexProduct(ProductRepository $pr): Response
+    #[Route('/api/v1/index-product/{id}', methods: ['GET'])]
+    public function indexProduct(int $id, ProductRepository $pr): Response
     {
         $product = $pr
             ->findOneBy([
-                "name" => "Keyboard"
+                "id" => $id
             ]);
+        if ($product) {
+            return new JsonResponse( [
+                "id" => $product->getId(),
+                "name" => $product->getName(),
+                "description" => $product->getDescription(),
+                "price" => $product->getPrice(),
+                "image" => $product->getImage(),
+            ]);
+        } else {
+            return new JsonResponse(
+                ['error' => 'Invalid product ID'],
+                JsonResponse::HTTP_NOT_FOUND
+            );
+        }
 
-        return $this->json("PRICE: " . $product->getPrice());
+
+
+        
     }
 
     #[Route('/api/v1/create-user', methods: ['POST'])]

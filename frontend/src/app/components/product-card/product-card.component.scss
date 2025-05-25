@@ -1,0 +1,12 @@
+.product-card{
+    .image-container{
+        height: 200px;
+        width: 100%;
+        img{
+            height: 100%;
+            width: auto;
+        }
+        border: 1px solid red;
+        overflow: hidden;
+    }
+}

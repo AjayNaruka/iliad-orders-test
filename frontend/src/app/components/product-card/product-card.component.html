@@ -1,0 +1,23 @@
+<a [routerLink]="['/products', product.id]">
+    <div class="product-card mb-3">
+    <div class="image-container d-flex justify-content-center py-1">
+        <img src="{{ product.image }}" class="" alt="" />
+    </div>
+    <div class="text-container mt-2">
+        <div class="row justify-content-end flex-no-wrap">
+        <div class="col-9">
+            <div class="title-container d-flex justify-content-start">
+                <span>{{ product.name | truncate:50 }}</span>
+            </div>
+            
+        </div>
+        <div class="col-3">
+            <div class="price-container d-flex justify-content-end">
+                <span>{{ product.price }} €</span>
+            </div>
+            
+        </div>
+        </div>
+    </div>
+    </div>
+</a>
