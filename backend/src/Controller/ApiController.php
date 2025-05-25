@@ -2,12 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Repository\ProductRepository;
+use App\Repository\UserRepository;
+use Carbon\Carbon;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -92,4 +97,36 @@ class ApiController extends AbstractController
 
         return new Response('User created');
     }
+
+    #[Route('/api/v1/user/create-order', methods: ['POST'])]
+    public function createOrder(UserPasswordHasherInterface $hasher, UserRepository $ur, ProductRepository $pr, EntityManagerInterface $em, Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $userMail = $this->getUser()->getUserIdentifier();
+        $user = $ur->findOneBy(["email" => $userMail]);
+
+        $product = $pr->findOneBy(["id" => $data["product_id"]]);
+
+        if($user && $product){
+            $order = new Order();;
+            $order->setUserId($user->getId());
+            $order->setUserId($user->getId());
+            $order->setProductId($product->getId());
+            $order->setCreationDate(Carbon::now()->toDateTime());
+
+            $em->persist($order);
+            $em->flush();
+
+            return new JsonResponse([
+                "order" => $order->getId()
+            ]);
+        } else {
+            return new JsonResponse(
+                ['error' => 'Invalid user or product'],
+                JsonResponse::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+
 }

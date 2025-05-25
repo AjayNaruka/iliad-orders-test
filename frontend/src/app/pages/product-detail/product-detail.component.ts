@@ -4,6 +4,7 @@ import { ProductService } from '../../modules/shared/services/api/product/produc
 import { Product } from '../../models/product.model';
 import { CommonModule } from '@angular/common';
 import { AuthServiceService } from '../../modules/shared/services/auth-service.service';
+import { OrderService } from '../../modules/shared/services/api/order/order.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -18,6 +19,7 @@ export class ProductDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private productApiService: ProductService,
+    private orderApiService: OrderService,
     private authService: AuthServiceService,
     private router: Router
   ) {}
@@ -38,13 +40,22 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  createOrder():void{
+  createOrder(){
+    if (!this.product) {
+      return;
+    }
     if (this.authService.isLoggedIn()) {
-      console.log(console.log("CREATE ORDER"));
+      this.orderApiService.storeOrder(this.product.id).subscribe({
+        next:(res) => {
+          console.log(res);
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
     } else {
       const returnUrl = this.router.url;
       this.router.navigate(['/login'], { queryParams: { returnUrl } });
-      console.log("GO TO LOGIN PAGE");
     }
     
   }

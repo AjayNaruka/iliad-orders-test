@@ -5,13 +5,13 @@ import { environment } from '../../../../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class UserApiService {
+export class OrderService {
 
   constructor(
     private apiService: ApiServiceService
   ) { }
 
-  login(data: any){    
-    return this.apiService.post(environment.api.endpoints.user.login, data);
+  storeOrder(id: Number){
+    return this.apiService.postAuth(environment.api.endpoints.orders.storeProducts, { product_id: id});
   }
 }
