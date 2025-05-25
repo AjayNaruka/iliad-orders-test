@@ -8,6 +8,8 @@ import {
 } from '@angular/forms';
 import { UserApiService } from '../../modules/shared/services/api/user/user-api.service';
 import { HttpClient } from '@angular/common/http';
+import { AuthServiceService } from '../../modules/shared/services/auth-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +23,9 @@ export class LoginComponent {
   title= "Ttile";
   constructor(
     formBuilder: FormBuilder,
-    private userApiService: UserApiService
+    private userApiService: UserApiService,
+    private authService: AuthServiceService,
+    private router: Router
     ) {
     this.loginForm = formBuilder.group({
       email: ['', Validators.required],
@@ -34,9 +38,11 @@ export class LoginComponent {
     console.log(this.loginForm.value);
     this.userApiService.login(this.loginForm.value)
       .subscribe(
-        (user: any) => {
-          console.log(user);
-          
+        (response: any) => {
+          console.log('token');
+          console.log(response);
+          this.authService.setToken(response.token);
+          this.router.navigate(["/"]);
         }
       )
   }

@@ -5,7 +5,8 @@
             <a routerLink="">HOMEPAGE</a>
         </div>
         <div class="right-links">
-            <a routerLink="/login">Login</a>
+            <a  *ngIf="!authService.isLoggedIn()" routerLink="/login">Login</a>
+            <a  *ngIf="authService.isLoggedIn()" (click)="authService.logout()" >Logout</a>
             <a routerLink="/products">Products</a>
         </div>
     </div>
