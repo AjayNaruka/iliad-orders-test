@@ -4,6 +4,8 @@ services:
       - "8080:80"
     image: ${IMAGES_PREFIX:-}app-php
     restart: unless-stopped
+    volumes:
+      - .:/app
     environment:
       SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
