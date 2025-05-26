@@ -11,7 +11,8 @@ export const environment = {
             },
             orders:{
                 storeOrder: "http://localhost:8080/api/v1/user/create-order",
-                listOrders: "http://localhost:8080/api/v1/user/list-orders"
+                listOrders: "http://localhost:8080/api/v1/user/list-orders",
+                deleteOrder: "http://localhost:8080/api/v1/user/delete-order",
             }
         }
     }

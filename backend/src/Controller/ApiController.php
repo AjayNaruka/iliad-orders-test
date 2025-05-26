@@ -9,6 +9,7 @@ use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use Carbon\Carbon;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -125,9 +126,15 @@ class ApiController extends AbstractController
     }
 
     #[Route('/api/v1/user/list-orders', methods: ['GET'])]
-    public function listOrders(ProductRepository $pr, UserRepository $ur, OrderRepository $or): Response
+    public function listOrders(UserRepository $ur, Request $request): Response
     {
-        //dd("LIST ORDERS");
+
+        $searchRequest = $request->get("search");
+        $orderRequest = $request->get("order");
+
+        $order = 'DESC';
+
+        if ($orderRequest == 'date_asc') $order = 'ASC';
 
         $userMail = $this->getUser()->getUserIdentifier();
         $user = $ur->findOneBy(["email" => $userMail]);
@@ -136,19 +143,62 @@ class ApiController extends AbstractController
 
         if ($user) {
             $orders = $user->getOrders();
+            $criteria = Criteria::create()
+                ->where(Criteria::expr()->isNull("deleteDate"))
+                ->orderBy(["creationDate" => $order]);
+            $orders = $orders->matching($criteria);
+            if ($searchRequest != '') {
+                $orders = $orders->filter(function ($order) use ($searchRequest) {
+                    $productName = $order->getProduct()->getName();
+                    return stripos($productName, $searchRequest) !== false;
+                });
+            }
+
             $mappedOrders = array_map(function ($order) {
                 $product = $order->getProduct();
                 return [
                     "order_id" => $order->getId(),
                     "product_name" => $product->getName(),
                     "product_price" => $product->getPrice(),
-                    "creation_date" => $order->getCreationDate(),
+                    "creation_date" => new Carbon($order->getCreationDate()),
+                    "product_data" => [
+                        "image" => $product->getImage(),
+                        "name" => $product->getName(),
+                        "description" => $product->getDescription(),
+                    ]
                 ];
             }, $orders->toArray());
-            return new JsonResponse($mappedOrders);
+            return new JsonResponse(array_values($mappedOrders));
         } else {
             return new JsonResponse(
                 ['error' => 'Invalid user'],
+                JsonResponse::HTTP_NOT_FOUND
+            );
+        }
+    }
+
+    #[Route('/api/v1/user/delete-order', methods: ['POST'])]
+    public function deleteOrder(UserPasswordHasherInterface $hasher, UserRepository $ur, OrderRepository $or, EntityManagerInterface $em, Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $userMail = $this->getUser()->getUserIdentifier();
+        $user = $ur->findOneBy(["email" => $userMail]);
+
+        $order = $or->findOneBy(["id" => $data["order_id"]]);
+
+        if ($user && $order && !$order->getDeleteDate()) {
+
+            $order->setDeleteDate(Carbon::now()->toDateTime());
+            $em->persist($order);
+            $em->flush();
+
+            return new JsonResponse([
+                "message" => "Deleted order with ID: " . $order->getId()
+            ]);
+        } else {
+            return new JsonResponse(
+                ['error' => 'Invalid user or order'],
                 JsonResponse::HTTP_NOT_FOUND
             );
         }

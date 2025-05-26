@@ -1,6 +1,15 @@
-.orders-container{
-    .single-order{
-        border: 1px solid gray;
-        border-radius: 5px;
+.orders-container {
+  .accordion-body {
+    .image-container {
+      width: 150px;
+      img{
+        object-fit: contain;
+      }
     }
+
+    .text-container{
+        width: calc(100% - 150px);
+        height: auto;
+    }
+  }
 }

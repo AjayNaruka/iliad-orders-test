@@ -15,8 +15,15 @@ export class OrderService {
     return this.apiService.postAuth(environment.api.endpoints.orders.storeOrder, { product_id: id});
   }
 
-  listOrders()
+  listOrders(data: any)
   {
-    return this.apiService.getAuth(environment.api.endpoints.orders.listOrders)
+    console.log(data);
+    
+    return this.apiService.getAuth(environment.api.endpoints.orders.listOrders, data)
+  }
+
+  deleteOrder(id: Number)
+  {
+    return this.apiService.postAuth(environment.api.endpoints.orders.deleteOrder, { order_id: id});
   }
 }

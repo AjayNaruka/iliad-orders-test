@@ -36,7 +36,7 @@ export class ApiServiceService {
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http.get<T>(endpoint, {headers}).pipe(
+    return this.http.get<T>(endpoint, {headers, params: body}).pipe(
       catchError((error: HttpErrorResponse) => {
         return throwError(() => error);
       })
