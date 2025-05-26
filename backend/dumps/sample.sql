@@ -121,7 +121,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'fapuasn@gmail.com','[\"ROLE_USER\"]','$2y$13$9qUPgEMY.aUPuUGGeHQB2ONs87gw.mngTiNNpDhH3BIcu./38n9me');
+INSERT INTO `user` VALUES (1,'test@gmail.com','[\"ROLE_USER\"]','$2y$13$9qUPgEMY.aUPuUGGeHQB2ONs87gw.mngTiNNpDhH3BIcu./38n9me');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
