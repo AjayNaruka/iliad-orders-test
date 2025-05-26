@@ -1,12 +1,29 @@
+a{
+    text-decoration: none;
+}
 .product-card{
+    border-radius: 5px;
     .image-container{
+        background-color: #F7F7F7;
         height: 200px;
         width: 100%;
         img{
             height: 100%;
             width: auto;
         }
-        border: 1px solid red;
+
         overflow: hidden;
+    }
+    .text-container{
+        border: 1px solid lightgray;
+        border-top: none;
+        height: 100%;
+        .title-container{
+            color: black;
+        }
+        .price-container{
+            color: black;
+            font-weight: bold;
+        }
     }
 }

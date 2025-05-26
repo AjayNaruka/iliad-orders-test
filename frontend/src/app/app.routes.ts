@@ -9,7 +9,7 @@ import { OrdersComponent } from './pages/orders/orders.component';
 import { loggedGuard } from './logged.guard';
 
 export const routes: Routes = [
-    {path: "", component: HomepageComponent},
+    {path: "", redirectTo: '/products', pathMatch: 'full'},
     {path: "login", component: LoginComponent, canActivate: [authGuard]},
     {path: "user/orders", component: OrdersComponent, canActivate: [loggedGuard]},
     {path: "products", component: ProductsComponent},

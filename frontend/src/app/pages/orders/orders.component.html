@@ -1,3 +1,10 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Orders</h1>
+        </div>
+    </div>
+</div>
 <div class="container fitlers-container mb-3">
   <form [formGroup]="searchForm">
     <div class="row">
@@ -15,32 +22,32 @@
 </div>
 <div class="container orders-container" *ngIf="orders">
   <div class="accordion" id="accordionExample">
-    <div class="accordion-item" *ngFor="let order of orders">
+    <div class="accordion-item" *ngFor="let order of orders; let i = index">
       <h2 class="accordion-header">
         <button
-          class="accordion-button collapsed"
+          class="accordion-button"
+          [class.collapsed]="i !== 0"
           type="button"
           data-bs-toggle="collapse"
           [attr.data-bs-target]="'#collapse-' + order.order_id"
-          [attr.aria-expanded]="'false'"
+          [attr.aria-expanded]="i === 0 ? 'true' : 'false'"
           [attr.aria-controls]="'collapse-' + order.order_id"
         >
-          <strong>Date</strong>: {{ order.creation_date | date }} | Order #{{
-            order.order_id
-          }}
+          <strong>Date</strong>: {{ order.creation_date | date }} | Order #{{ order.order_id }}
         </button>
       </h2>
       <div
         [id]="'collapse-' + order.order_id"
         class="accordion-collapse collapse"
+        [class.show]="i === 0"
         data-bs-parent="#accordionExample"
       >
         <div class="accordion-body d-flex">
           <div class="image-container d-flex justify-content-center px-3">
-            <img src="{{ order.product_data.image }}" class="img-fluid" />
+            <img src="{{order.product_data.image}}" class="img-fluid" />
           </div>
           <div class="text-container">
-            <h4>{{order.product_data.name}}</h4>
+            <h4>{{ order.product_data.name }}</h4>
             <p>{{ order.product_data.description }}</p>
             <button
               type="button"

@@ -48,6 +48,7 @@ export class ProductDetailComponent implements OnInit {
       this.orderApiService.storeOrder(this.product.id).subscribe({
         next:(res) => {
           console.log(res);
+          alert("Order created")
         },
         error: (err) => {
           console.log(err);
